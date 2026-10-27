@@ -63,6 +63,12 @@ dotnet test tests/TTC.Gui.Tests
 
 ---
 
+## 反馈
+
+BUG反馈，功能添加等，请加入QQ群1071193752
+
+---
+
 ## 免责声明
 本项目与 Square Enix 无隶属关系，不用于商业用途。
 幻卡规则以《最终幻想 XIV》实际版本为准。
