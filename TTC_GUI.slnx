@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TTC.Core/TTC.Core.csproj" />
+    <Project Path="src/TTC.Engine/TTC.Engine.csproj" />
+    <Project Path="src/TTC.Gui/TTC.Gui.csproj" />
+    <Project Path="src/TTC.Search/TTC.Search.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TTC.Gui.Tests/TTC.Gui.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,43 @@
+<UserControl x:Class="TTC.Gui.Controls.CardTile"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Width="96" Height="118">
+    <Border x:Name="Root" CornerRadius="8" BorderThickness="2" Padding="2">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="20"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- 上 -->
+            <TextBlock x:Name="TxtUp" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       FontSize="14" FontWeight="Bold" Foreground="#FFF3E0"/>
+            <!-- 左 -->
+            <TextBlock x:Name="TxtLeft" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       FontSize="14" FontWeight="Bold" Foreground="#FFF3E0"/>
+            <!-- 右 -->
+            <TextBlock x:Name="TxtRight" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       FontSize="14" FontWeight="Bold" Foreground="#FFF3E0"/>
+            <!-- 下 -->
+            <TextBlock x:Name="TxtDown" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       FontSize="14" FontWeight="Bold" Foreground="#FFF3E0"/>
+
+            <!-- 中央 -->
+            <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock x:Name="TxtName" FontSize="11" TextAlignment="Center" TextWrapping="Wrap"
+                           Foreground="#FFE8D5" MaxHeight="30"/>
+                <TextBlock x:Name="TxtStar" FontSize="9" TextAlignment="Center" Foreground="#FFD48A"/>
+            </StackPanel>
+
+            <!-- 推荐高亮 -->
+            <Border x:Name="Glow" Grid.Row="0" Grid.Column="0" Grid.RowSpan="3" Grid.ColumnSpan="3"
+                    CornerRadius="7" BorderThickness="2" BorderBrush="#FFFFC107" Visibility="Collapsed" IsHitTestVisible="False"/>
+        </Grid>
+    </Border>
+</UserControl>

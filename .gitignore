@@ -1,0 +1,17 @@
+# 构建产物
+dist/
+bin/
+obj/
+
+# 开发中间产物 / QA 截图与脚本 / 日志
+.verify/
+*.log
+
+# IDE 与运行环境
+.vs/
+.idea/
+.mimocode/
+
+# 用户本地文件
+*.user
+*.suo
