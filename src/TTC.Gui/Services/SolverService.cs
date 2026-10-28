@@ -259,7 +259,7 @@ public sealed class SolverService
     private static CardSnapshot UnknownSnapshot(int owner) => new(0, 0, 0, 0, (byte)owner, -1, null, true);
 
     /// <summary>Builds the engine snapshot; <paramref name="oppOverride"/> fills the unknown opponent slots.</summary>
-    private StateSnapshot BuildSnapshot(PositionSetup setup, HandCard[]? oppOverride)
+    public static StateSnapshot BuildSnapshot(PositionSetup setup, HandCard[]? oppOverride = null)
     {
         var s = new StateSnapshot { Current = setup.Current, Rules = setup.Rules };
         for (int cell = 0; cell < 9; cell++)

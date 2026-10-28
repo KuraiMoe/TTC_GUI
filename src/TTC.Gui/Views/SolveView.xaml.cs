@@ -42,15 +42,8 @@ public partial class SolveView : UserControl
                 dialog.ShowDialog();
                 return dialog.Result;
             };
-            vm.DepthRows.CollectionChanged += OnDepthRowsChanged;
+            // 静默求解：进度行只更新数据，不滚动页面。
         }
-    }
-
-    private void OnDepthRowsChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (Vm is null || Vm.DepthRows.Count == 0) return;
-        var last = Vm.DepthRows[^1];
-        Dispatcher.BeginInvoke(() => DepthGrid.ScrollIntoView(last));
     }
 
     // ------------------------------------------------------------------ click (card picker)
@@ -82,7 +75,7 @@ public partial class SolveView : UserControl
             if (Math.Abs(pos.X - _dragStart.X) < SystemParameters.MinimumHorizontalDragDistance &&
                 Math.Abs(pos.Y - _dragStart.Y) < SystemParameters.MinimumVerticalDragDistance)
                 return;
-            if (_dragSource.Card is null || _dragSource.Unknown)
+            if (_dragSource.Card is null && !_dragSource.Unknown)
             {
                 _dragSource = null;
                 return;
@@ -111,6 +104,11 @@ public partial class SolveView : UserControl
         element?.CaptureMouse();
 
         DragTile.Card = _dragSource!.Card;
+        DragTile.Unknown = _dragSource.Unknown;
+        // 浮层颜色跟随卡牌归属：手牌看所属方，棋盘看当前归属。
+        bool blue = _dragSource.IsBoard ? _dragSource.Owner == 1 : _dragSource.Side == 1;
+        DragTile.BackBrush = blue ? SlotViewModel.BlueBackBrush : SlotViewModel.RedBackBrush;
+        DragTile.Accent = blue ? SlotViewModel.BlueBrush : SlotViewModel.RedBrush;
         DragPopup.IsOpen = true;
         DragScale.ScaleX = DragScale.ScaleY = 0.85;
         var anim = new DoubleAnimation(1.0, TimeSpan.FromMilliseconds(150))
@@ -150,35 +148,41 @@ public partial class SolveView : UserControl
         return null;
     }
 
-    /// <summary>Zone fallback: dropping a board card anywhere on a hand panel returns it to the first free slot.</summary>
+    /// <summary>Zone fallback: dragging the last-played board card onto either hand zone undoes it.</summary>
     private SlotViewModel? FindZoneSlotUnder(MouseEventArgs e)
     {
         if (_dragSource is not { IsBoard: true }) return null;
-        foreach (var (zone, side) in new[] { (HandBlueZone, 1), (HandRedZone, 0) })
+        foreach (var zone in new[] { HandBlueZone, HandRedZone })
         {
-            if (zone.InputHitTest(e.GetPosition(zone)) is null) continue;
-            var hand = side == 1 ? Vm!.HandBlue : Vm!.HandRed;
-            return System.Linq.Enumerable.FirstOrDefault(hand, s => s.Card is null && !s.Unknown);
+            if (zone.InputHitTest(e.GetPosition(zone)) is not null)
+                return Vm?.UndoTargetSlot;
         }
         return null;
     }
 
-    private static bool IsDropValid(SlotViewModel from, SlotViewModel target)
+    private bool IsDropValid(SlotViewModel from, SlotViewModel target)
     {
-        if (from.Card is null || from.Unknown || ReferenceEquals(from, target)) return false;
-        if (target.IsBoard) return target.Card is null;          // board: empty cell only
-        if (from.IsBoard) return target.Card is null && !target.Unknown; // return to an empty hand slot
-        return true;                                              // hand → hand: move or swap
+        if (Vm is null || (from.Card is null && !from.Unknown) || ReferenceEquals(from, target)) return false;
+        if (target.IsBoard)
+        {
+            // 落子：行棋方的手牌（含未知牌）→ 空格；有待揭示未知牌时不再落子。
+            return !from.IsBoard && target.Card is null && !target.Unknown
+                && !Vm.HasPendingReveal && (!Vm.IsGameActive || from.Side == Vm.Current);
+        }
+        if (from.IsBoard)
+        {
+            // 悔棋：仅最近一手可以拖回手牌。
+            return Vm.CanUndoFrom(from);
+        }
+        return !from.Unknown; // 手牌之间交换位置（未知牌不参与交换）
     }
 
     private void EndDrag(bool drop)
     {
-        if (_hoverSlot is not null && drop && _dragSource is not null && Vm is not null)
-        {
-            if (_hoverSlot.IsBoard) Vm.DropOnBoard(_dragSource, _hoverSlot);
-            else Vm.DropOnHandSlot(_dragSource, _hoverSlot);
-        }
+        var source = _dragSource;
+        var target = _hoverSlot;
 
+        // 先完全收起拖拽浮层再落子，避免弹窗压在未收尾的拖拽上。
         if (_hoverSlot is not null) _hoverSlot.IsDropHover = false;
         _hoverSlot = null;
         _dragging = false;
@@ -186,5 +190,12 @@ public partial class SolveView : UserControl
         _captured = null;
         DragPopup.IsOpen = false;
         DragTile.Card = null;
+        DragTile.Unknown = false;
+
+        if (drop && source is not null && target is not null && Vm is not null)
+        {
+            if (target.IsBoard) Vm.DropOnBoard(source, target);
+            else Vm.DropOnHandSlot(source, target);
+        }
     }
 }

@@ -55,7 +55,7 @@
                 <StackPanel Margin="10,16,10,10">
                     <TextBlock Text="TTC 幻卡助手" FontSize="20" FontWeight="Bold" Margin="8,0,0,2"/>
                     <TextBlock Text="最终幻想14 · 九宫幻卡求解器" Foreground="#999999" FontSize="11" Margin="8,0,0,2"/>
-                    <TextBlock Text="v0.1.0-beta" Foreground="#777777" FontSize="11" Margin="8,0,0,16"/>
+                    <TextBlock Text="v0.1.1-beta" Foreground="#777777" FontSize="11" Margin="8,0,0,16"/>
 
                     <RadioButton x:Name="NavSolve" AutomationProperties.AutomationId="NavSolve" Style="{StaticResource NavItemStyle}" Content="对局求解"
                                  IsChecked="True" Checked="OnNavSolve" GroupName="Nav"/>

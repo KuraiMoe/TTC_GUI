@@ -7,9 +7,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <AssemblyName>TTC_GUI</AssemblyName>
-    <Version>0.1.0-beta</Version>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
-    <FileVersion>0.1.0.0</FileVersion>
+    <Version>0.1.1-beta</Version>
+    <AssemblyVersion>0.1.1.0</AssemblyVersion>
+    <FileVersion>0.1.1.0</FileVersion>
     <RootNamespace>TTC.Gui</RootNamespace>
     <AssemblyTitle>TTC 幻卡助手</AssemblyTitle>
     <Product>TTC GUI</Product>
